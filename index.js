@@ -1,6 +1,6 @@
 // Write your code here
 const main = document.querySelector('main')
-const article = document.querySelector('article')
+const articleEl = document.querySelector('article')
 
 const state = {
     breweries:[]
@@ -74,18 +74,19 @@ function renderFiltersSection(){
     filterByCityFormEl.append(inputEl, filterByCityFormLabelEl)
 }
 
-function renderOneArticle(){
+function renderOneArticle(article){
+
     const breweriesListUlEl = document.createElement('ul')
     breweriesListUlEl.setAttribute('class','breweries-list')
 
     const breweriesLiEl = document.createElement('li')
 
     const titleh2El = document.createElement('h2')
-    titleh2El.textContent = 'Snow Belt Brew'
+    titleh2El.textContent = article.name
 
     const typeEl = document.createElement('div')
     typeEl.setAttribute('class','type')
-    typeEl.textContent = 'micro'
+    typeEl.textContent = article.brewery_type
 
     const addressEl = document.createElement('section')
     addressEl.setAttribute('class','address')
@@ -93,27 +94,27 @@ function renderOneArticle(){
     const titleAddressEl = document.createElement('h3')
     titleAddressEl.textContent = 'Address:'
     const roadAddressEl = document.createElement('p')
-    roadAddressEl.textContent = '9511 Kile Rd'
+    roadAddressEl.textContent = article.street
     const cityAddressEl = document.createElement('p')
     const strongEl = document.createElement('strong')
-    strongEl.textContent = 'Chardon, 44024'
+    strongEl.textContent = `${article.city}, ${article.postal_code}`
 
     const phoneEl = document.createElement('section')
     phoneEl.setAttribute('class','phone')
     const titlePhoneEl = document.createElement('h3')
     titlePhoneEl.textContent = 'Phone:'
     const phoneNumberEl = document.createElement('p')
-    phoneNumberEl.textContent = 'N/A'
+    phoneNumberEl.textContent = article.phone
 
     const linkEl = document.createElement('section')
     linkEl.setAttribute('class','link')
     const anchorTagEl = document.createElement('a')
-    anchorTagEl.setAttribute('href','null')
+    anchorTagEl.setAttribute('href',`${article.website_url}`)
     anchorTagEl.setAttribute('target','_blank')
     anchorTagEl.textContent = 'Visit Website'
 
 
-    article.append(breweriesListUlEl)
+    articleEl.append(breweriesListUlEl)
     breweriesListUlEl.append(breweriesLiEl)
     breweriesLiEl.append(titleh2El, typeEl, addressEl, phoneEl, linkEl)
     addressEl.append(titleAddressEl, roadAddressEl, cityAddressEl)
@@ -122,5 +123,25 @@ function renderOneArticle(){
     linkEl.append(anchorTagEl)
 
 }
-renderFiltersSection()
-renderOneArticle()
+
+function renderAllArticle(){
+    articleEl.innerHTML = ''
+    for(const article of state.breweries){
+        renderOneArticle(article)
+    }
+}
+function getData() {
+    return fetch('https://api.openbrewerydb.org/breweries?per_page=10&page=5').then(function (resp) {
+      return resp.json()
+    })
+}
+getData().then(function (dataFromServer) {
+    state.breweries = dataFromServer
+    console.log(state)
+    render()
+})
+function render(){
+    renderAllArticle()
+    renderFiltersSection()
+}
+render()
