@@ -89,9 +89,9 @@ main {
   border: none;
   background-color: transparent;
   color: var(--secondary-color);
-
+  cursor: pointer;
   text-decoration: underline;
-  font-size: 0.725rem;
+  font-size: 1rem;
 }
 
 #filter-by-type-form {
